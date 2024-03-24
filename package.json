@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@propelauth/auth-proxy": "^0.0.8"
+  }
+}
