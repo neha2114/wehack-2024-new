@@ -73,6 +73,11 @@ from sklearn.linear_model import LogisticRegression
 logreg = LogisticRegression()
 
 logreg.fit(x_train, y_train)
+prediction = logreg.predict(x_test)
+
+from sklearn.metrics import accuracy_score
+
+print(accuracy_score(y_test, prediction))
 
 #Verify Claim Integrity Page
 
@@ -111,24 +116,24 @@ if rad=="Check Claim Integrity":
 
     combined_data = []
     combined_data.append(user_data)
-    print(combined_data)
+    #print(combined_data)
 
     np_data = np.array(combined_data)
-    print(np_data.shape)
+    #print(np_data.shape)
     user_df = pd.DataFrame(data=np_data, columns=x_test.columns)
-    user_df
+    #user_df
 
     y_value = y_test.loc[403]
     user_value = []
     user_value.append(y_value)
-    print(user_value)
+    #print(user_value)
     value = []
     value.append(user_value)
-    print(value)
+    #print(value)
     np_value = np.array(user_value)
-    print('shape', np_value.shape)
+    #print('shape', np_value.shape)
     value_df = pd.DataFrame(data=np_value)
-    value_df
+    #value_df
 
     
     prediction = logreg.predict(np_data)
@@ -136,9 +141,53 @@ if rad=="Check Claim Integrity":
     #prediction3=logreg.predict([[age,repnumber,deductible,driverrating,pastnumclaims,vehicleage,policyholderage,fraudfound,sex_male,policereportfiled,faultthirdparty,sedancollision,sedanliability,sportall,sportcollision,sportliability,utilityall,utilitycollision,utilityliability,witnesspresent,agentpresent,policycollision,policyliability]])[0]
     
     if st.button("Predict"):
-        print(prediction)
+        #print(prediction)
         if prediction[0]==0:
             st.success("Your claim is most likely authentic")
         else:
             st.warning("Your claim is likely to be fraudulent")
-                                        
+
+            
+            errors = np.array([])
+            columns = np.array(train.columns)
+
+            for col in columns:
+                mean = float(train.loc[:, col].mean())
+                data = float(user_df[col])
+                error = ((abs(data - mean)) / mean) * 100
+                if (float(error) < 100):
+                    errors = np.append(errors, float(error))
+                else:
+                    errors = np.append(errors, float(-1))
+            
+            max = np.max(errors)
+            max_index = 0
+
+            for i in range(len(errors)):
+                if (errors[i] == max):
+                    max_index = i
+            
+            col_val = columns[max_index]
+
+            st.markdown("Factor likely responsible for fraudulent claim: " + col_val)
+            st.write("Generating AI-driven recommendations to handle fraudulent claims...")
+
+            import pathlib
+            import textwrap
+
+            import google.generativeai as genai
+
+            from IPython.display import display
+            from IPython.display import Markdown
+
+
+            def to_markdown(text):
+                text = text.replace('•', '  *')
+                return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
+            
+            genai.configure(api_key='AIzaSyDDF0HafKnQwEBr_RQiLXxlqml-OQTUNYU')
+            model = genai.GenerativeModel('gemini-pro')
+            prompt = "what are some advice for an insurance agent on steps to take after receiving a fraudulent insurance claim? and how can they prevent fraudulent insurance claims?"
+            response = model.generate_content(prompt)
+            st.markdown(response.text)
+                                                    

@@ -2,8 +2,8 @@ import { initializeAuthProxy } from '@propelauth/auth-proxy'
 
 // Replace with your configuration
 await initializeAuthProxy({
-    authUrl: "https://75421095655.propelauthtest.com",
-    integrationApiKey: "19235a5955a79425562e01ac48c45bc42fdbd7b211dcfc008c894620900951471e379481563756944c21432cf29f78a1",
+    authUrl: "https://02386824.propelauthtest.com",
+    integrationApiKey: "cb0444e05b66341d43c073097ee73bbc8d32fe935a743ed69a9f9c67b5edb3cc79aeeff4f0ea23156f95d3de6cef87c8",
     proxyPort: 8000,
     urlWhereYourProxyIsRunning: 'http://localhost:8000',
     target: {
