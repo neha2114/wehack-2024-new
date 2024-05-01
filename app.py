@@ -6,6 +6,8 @@ import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from propelauth import auth
+from dotenv import load_dotenv
+import os
 
 
 #building the sidebar of the web app which will help us navigate through the different sections of the entire application
@@ -185,7 +187,9 @@ if rad=="Check Claim Integrity":
                 text = text.replace('•', '  *')
                 return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
             
-            genai.configure(api_key='AIzaSyDDF0HafKnQwEBr_RQiLXxlqml-OQTUNYU')
+            load_dotenv()
+            API_KEY = os.getenv("API_KEY")
+            genai.configure(api_key=API_KEY)
             model = genai.GenerativeModel('gemini-pro')
             prompt = "what are some advice for an insurance agent on steps to take after receiving a fraudulent insurance claim? and how can they prevent fraudulent insurance claims?"
             response = model.generate_content(prompt)
